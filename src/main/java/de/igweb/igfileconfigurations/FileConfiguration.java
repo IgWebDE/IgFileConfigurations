@@ -26,6 +26,7 @@ public class FileConfiguration {
     public void load() {
         try {
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(path));
+            yamlConfiguration.getKeys(true).forEach(key -> values.put(key, yamlConfiguration.get(key)));
             for (Field field : getClass().getDeclaredFields()) {
                 try {
                     field.setAccessible(true);
@@ -42,6 +43,7 @@ public class FileConfiguration {
     public void save() {
         try {
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(path));
+            values.forEach(yamlConfiguration::set);
             for (Field declaredField : getClass().getDeclaredFields()) {
                 declaredField.setAccessible(true);
                 yamlConfiguration.set(declaredField.getName(), declaredField.get(this));
