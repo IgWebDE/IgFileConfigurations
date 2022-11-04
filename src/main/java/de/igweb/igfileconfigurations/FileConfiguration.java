@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@SuppressWarnings("unused")
 public class FileConfiguration {
 
     private final MetaData metaData;
@@ -60,6 +61,22 @@ public class FileConfiguration {
 
     public void set(String key, Object value) {
         values.put(key, value);
+    }
+
+    public void removeByKey(String key) {
+        values.remove(key);
+    }
+
+    public void removeByValue(Object value) {
+        values.entrySet().removeIf(entry -> entry.getValue().equals(value));
+    }
+
+    public boolean containsKey(String key) {
+        return values.containsKey(key);
+    }
+
+    public boolean containsValue(Object value) {
+        return values.containsValue(value);
     }
 
 }
