@@ -12,15 +12,15 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class FileConfiguration {
 
-    private final MetaData metaData;
+    private final FileSettings fileSettings;
 
     private final String path;
 
     private final Map<String, Object> values = new HashMap<>();
 
     public FileConfiguration() {
-        this.metaData = getClass().getAnnotation(MetaData.class);
-        this.path = metaData.value();
+        this.fileSettings = getClass().getAnnotation(FileSettings.class);
+        this.path = fileSettings.value();
         load();
     }
 
@@ -29,11 +29,8 @@ public class FileConfiguration {
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(path));
             yamlConfiguration.getKeys(true).forEach(key -> values.put(key, yamlConfiguration.get(key)));
             for (Field field : getClass().getDeclaredFields()) {
-                try {
-                    field.setAccessible(true);
-                    field.set(this, yamlConfiguration.get(field.getName()));
-                } catch (Exception a) {
-                    a.printStackTrace();
+                if (field.trySetAccessible()) {
+                    field.set(this, values.get(field.getName()));
                 }
             }
         } catch (Exception exception) {
@@ -45,9 +42,10 @@ public class FileConfiguration {
         try {
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new File(path));
             values.forEach(yamlConfiguration::set);
-            for (Field declaredField : getClass().getDeclaredFields()) {
-                declaredField.setAccessible(true);
-                yamlConfiguration.set(declaredField.getName(), declaredField.get(this));
+            for (Field field : getClass().getDeclaredFields()) {
+                if (field.trySetAccessible()) {
+                    yamlConfiguration.set(field.getName(), field.get(this));
+                }
             }
             yamlConfiguration.save(new File(path));
         } catch (Exception exception) {

@@ -1,7 +1,7 @@
 package de.igweb.igfileconfigurations.test;
 
 import de.igweb.igfileconfigurations.FileConfiguration;
-import de.igweb.igfileconfigurations.MetaData;
+import de.igweb.igfileconfigurations.FileSettings;
 import lombok.*;
 
 @Getter
@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-@MetaData("config.yml")
+@FileSettings("config.yml")
 public class TestConfiguration extends FileConfiguration {
 
     private String testA;
